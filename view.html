@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js -->
+    <script src="./js/jquery_min.js"></script>
+
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- . Recording ------------------------------------------------------------------->
+    <h1>Recording</h1>
+    <div class="search_container">
+      <input type="text" id="speechText" /> &nbsp;
+      <input
+        type="button"
+        id="start"
+        value="Start"
+        onclick="startRecording();"
+      />
+    </div>
+
+    <!-- . Audio ----------------------------------------------------------------------->
+    <h1>Audio:</h1>
+    <audio controls id="audio_src" src="http://localhost:8001/response.wav?x=1">
+      <source type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- . Debugging ------------------------------------------------------------------->
+    <h1>Debugging</h1>
+
+    <h2>Speech:</h2>
+    <hr />
+
+    <p id="speech"></p>
+    <br />
+
+    <!-- Server -->
+    <div class="response"></div>
+  </body>
+
+  <!-- . jQuery ------------------------------------------------------------------------>
+  <script>
+    var recognition = new webkitSpeechRecognition();
+
+    function startRecording() {
+      $("#speech").empty();
+      $(".response").empty();
+      recognition.start();
+    }
+
+    recognition.onresult = (event) => {
+      var result = event.results[0][0].transcript;
+
+      $("#speech").innerHTML = result;
+
+      $.ajax({
+        url: "getData.php",
+        type: "post",
+        data: { speechText: result },
+        success: function (response) {
+          $(".response").empty();
+          $(".response").append(response);
+        },
+      });
+
+      // forced reload
+      $("#audio_src").setAttribute(
+        "src",
+        "http://localhost:8001/response.wav?x=" + new Date().getTime()
+      );
+    };
+  </script>
+</html>
