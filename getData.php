@@ -1,5 +1,8 @@
 <?php
 
+mkdir("tmp");
+file_put_contents("tmp/response.wav", "");
+
 //. Received ----------------------------------------------------------------------------
 echo "<h2>Received</h2><hr>";
 
