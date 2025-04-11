@@ -23,7 +23,11 @@
 
     <!-- . Audio ----------------------------------------------------------------------->
     <h1>Audio:</h1>
-    <audio controls id="audio_src" src="http://localhost:8001/response.wav?x=1">
+    <audio
+      controls
+      id="audio_src"
+      src="http://localhost:8001/tmp/response.wav?x=1"
+    >
       <source type="audio/wav" />
       Your browser does not support the audio element.
     </audio>
@@ -43,7 +47,7 @@
 
   <!-- . jQuery ------------------------------------------------------------------------>
   <script>
-    var recognition = new webkitSpeechRecognition();
+    let recognition = new webkitSpeechRecognition();
 
     function startRecording() {
       $("#speech").empty();
@@ -52,9 +56,9 @@
     }
 
     recognition.onresult = (event) => {
-      var result = event.results[0][0].transcript;
+      const result = event.results[0][0].transcript;
 
-      $("#speech").innerHTML = result;
+      $("#speech").text(result);
 
       $.ajax({
         url: "getData.php",
@@ -67,9 +71,9 @@
       });
 
       // forced reload
-      $("#audio_src").setAttribute(
+      $("#audio_src").attr(
         "src",
-        "http://localhost:8001/response.wav?x=" + new Date().getTime()
+        "http://localhost:8001/tmp/response.wav?x=" + new Date().getTime()
       );
     };
   </script>

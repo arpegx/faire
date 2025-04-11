@@ -17,17 +17,16 @@ echo "<h2>Model</h2><hr>";
 exec(
     'curl http://localhost:11434/api/generate -d \'{"model": "gemma3:1b", "stream": false, "prompt": 
     "Beantworte bitte nur auf deutsch folgende Frage: ' . $speech . '"}\'',
-    $output_model,
-    $result_code
+    $out_model,
 );
-file_put_contents("./tmp/tmp_model", $output_model[0]);
+file_put_contents("./tmp/tmp_model", $out_model[0]);
 
-var_dump($output_model);
+var_dump($out_model);
 
 //. jq ----------------------------------------------------------------------------------
 echo "<h2>jq</h2><hr>";
 
-exec('jq ".response" <<< cat ./tmp/tmp_model', $out_jq, $code_jq);
+exec('jq ".response" <<< cat ./tmp/tmp_model', $out_jq);
 $out_jq[0] = str_replace("\\n", "", $out_jq[0]);
 $out_jq[0] = str_replace("*", "", $out_jq[0]);
 
@@ -38,9 +37,8 @@ var_dump($out_jq);
 //. Piper -------------------------------------------------------------------------------
 echo "<h2>Piper</h2><hr>";
 exec(
-    "cat ./tmp/tmp_jq | piper --model ./piper/de_DE-thorsten-medium.onnx --output-file response.wav",
-    $out_piper,
-    $code_piper
+    "cat ./tmp/tmp_jq | piper --model ./piper/de_DE-thorsten-medium.onnx --output-file ./tmp/response.wav",
+    result_code: $code_piper
 );
 
 var_dump($code_piper);
